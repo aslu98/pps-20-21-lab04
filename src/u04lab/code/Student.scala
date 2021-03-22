@@ -1,12 +1,13 @@
 package u04lab.code
 
 import Lists._
-import u04lab.code.Lists.List.Cons // import custom List type (not the one in Scala stdlib)
+import u04lab.code.Lists.List.{Cons, appendByFold, length} // import custom List type (not the one in Scala stdlib)
+
 
 trait Student {
   def name: String
   def year: Int
-  def enrolling(course: Course): Unit // the student participates to a Course
+  def enrolling(courses: Course*): Unit // the student participates to a Course
   def courses: List[String] // names of course the student participates to
   def hasTeacher(teacher: String): Boolean // is the student participating to a course of this teacher?
 }
@@ -17,11 +18,24 @@ trait Course {
 }
 
 object Student {
-  def apply(name: String, year: Int = 2017): Student = ???
+  def apply(name: String, year: Int = 2017): Student = StudentImpl(name, year)
+
+  private case class StudentImpl(override val name:String, override  val year:Int) extends Student {
+    private var coursesSet: List[Course] = List.nil
+    override def enrolling(courses: Course*): Unit = for (course <- courses) {
+      coursesSet = List.append(Cons(course, List.nil), coursesSet)
+    }
+    override def courses: List[String] = List.map(coursesSet)(_.name)
+    override def hasTeacher(teacher: String): Boolean = length(List.filterByFlatmap(coursesSet)(_.teacher == teacher)) >= 1
+  }
 }
 
 object Course {
-  def apply(name: String, teacher: String): Course = ???
+  def apply(name: String, teacher: String): Course = CourseImpl(name, teacher)
+
+  private case class CourseImpl(override val name:String, override  val teacher:String) extends Course {
+   assert(name!= null && teacher !=null)
+  }
 }
 
 object Try extends App {
@@ -31,8 +45,7 @@ object Try extends App {
   val s1 = Student("mario",2015)
   val s2 = Student("gino",2016)
   val s3 = Student("rino") //defaults to 2017
-  s1.enrolling(cPPS)
-  s1.enrolling(cPCD)
+  s1.enrolling(cPPS, cPCD)
   s2.enrolling(cPPS)
   s3.enrolling(cPPS)
   s3.enrolling(cPCD)

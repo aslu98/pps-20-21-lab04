@@ -65,11 +65,19 @@ object Lists extends App {
     def foldRight[A,B](l: List[A])(acc: B)(f: (A,B)=>B): B =
       foldRightViaFoldleft(l)(acc)(f)
 
-    def filterByFlatmap[A](l: List[A])(f: A => Boolean): List[A] = ???
+    def filterByFlatmap[A](l: List[A])(f: A => Boolean): List[A] = l match {
+      case Cons(h,t) if f(h) => Cons(h,filterByFlatmap(t)(f))
+      case Cons(_,t) => filterByFlatmap(t)(f)
+      case Nil() => Nil()
+    }
 
-    def appendByFold[A](l1: List[A], l2: List[A]): List[A] = ???
+    def appendByFold[A](l1: List[A], l2: List[A]): List[A] =
+      foldRight(l1)(l2)((h, t) => Cons(h,t))
 
-    def length(l: List[_]): Int = ???
+    def length(l: List[_]): Int = l match {
+      case Cons(_, t) => length(t) + 1
+      case _ => 0
+    }
   }
 
   // Note "List." qualification
@@ -95,7 +103,7 @@ object Lists extends App {
   // EXERCISES:
   println(filterByFlatmap(Cons(10, Cons(20, Nil())))(_>15)) // Cons(20, Nil())
   println(filterByFlatmap(Cons("a", Cons("bb", Cons("ccc", Nil()))))( _.length <=2)) // Cons("a",Cons("bb", Nil()))
-  println(appendByFold(Cons(3,Cons(7,Nil())), Cons(1,Cons(5,Nil())))) // Cons(3,Cons(7,Cons(1,Cons(5, Nil()))))
+  println(appendByFold(Cons(2, Cons(3,Cons(7,Nil()))), Cons(1,Cons(5,Nil())))) // Cons(3,Cons(7,Cons(1,Cons(5, Nil()))))
   println(length(Nil())) // 0
-  println(length(Cons(3,Cons(7,Cons(1,Cons(5, Nil())))))) // 4
-}
+  println(length(Cons(3,Cons(7,Cons(1,Cons(5, Nil())))))// 4
+  )}
