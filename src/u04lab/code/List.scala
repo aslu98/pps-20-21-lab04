@@ -1,6 +1,7 @@
 package u04lab.code
 
 import scala.annotation.tailrec
+import Streams._
 
 object Lists extends App {
 
@@ -14,6 +15,11 @@ object Lists extends App {
 
     def nil[A]: List[A] = Nil() // smart constructor
 
+    def toStream[A](l: List[A]): Stream[A] = l match {
+      case Cons(h, t) => Stream.Cons(() =>h, () => toStream(t))
+      case _ => Stream.empty()
+    }
+
     def sum(l: List[Int]): Int = l match {
       case Cons(h, t) => h + sum(t)
       case _ => 0
@@ -24,9 +30,10 @@ object Lists extends App {
       case _ => l2
     }
 
+    @tailrec
     def drop[A](l: List[A], n: Int): List[A] = l match {
       case _ if n<=0 || l==Nil() => l
-      case Cons(h,t) => drop(t,n-1)
+      case Cons(_,t) => drop(t,n-1)
     }
 
     def map[A,B](l: List[A])(f: A => B): List[B] = l match {
