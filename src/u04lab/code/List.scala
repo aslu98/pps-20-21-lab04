@@ -15,6 +15,14 @@ object Lists extends App {
 
     case class Nil[E]() extends List[E]
 
+    def apply[A](elements: A*): List[A] = {
+      var l: List[A] = nil;
+      for (elem <- elements) {
+        l = append(l, Cons(elem, nil))
+      }
+      l
+    }
+
     def nil[A]: List[A] = Nil() // smart constructor
 
     def toStream[A](l: List[A]): Stream[A] = l match {
@@ -89,16 +97,6 @@ object Lists extends App {
     }
   }
 
-  object ListFactory {
-    def apply[A](elements: A*): List[A] = {
-      var l: List[A] = List.nil;
-      for (elem <- elements) {
-        l = List.append(l, List.Cons(elem, List.nil))
-      }
-      l
-    }
-  }
-
   // Note "List." qualification
   println(List.sum(List.Cons(10, List.Cons(20, List.Cons(30, List.Nil()))))) // 60
 
@@ -127,5 +125,5 @@ object Lists extends App {
   println(appendByFold(Cons(2, Cons(3, Cons(7, Nil()))), Cons(1, Cons(5, Nil())))) // Cons(3,Cons(7,Cons(1,Cons(5, Nil()))))
   println(length(Nil())) // 0
   println(length(Cons(3, Cons(7, Cons(1, Cons(5, Nil())))))) // 4
-  println(ListFactory(1,2,3)) // Cons(3,Cons(2,Cons(1, Nil())))
+  println(List(1,2,3)) // Cons(3,Cons(2,Cons(1, Nil())))
 }
