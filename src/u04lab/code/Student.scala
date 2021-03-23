@@ -23,10 +23,10 @@ object Student {
   private case class StudentImpl(override val name:String, override  val year:Int) extends Student {
     private var coursesSet: List[Course] = List.nil
     override def enrolling(courses: Course*): Unit = for (course <- courses) {
-      coursesSet = List.append(Cons(course, List.nil), coursesSet)
+      coursesSet = Cons(course, coursesSet)
     }
     override def courses: List[String] = List.map(coursesSet)(_.name)
-    override def hasTeacher(teacher: String): Boolean = length(List.filterByFlatmap(coursesSet)(_.teacher == teacher)) >= 1
+    override def hasTeacher(teacher: String): Boolean = length(List.filter(coursesSet)(_.teacher == teacher)) >= 1
   }
 }
 
