@@ -95,6 +95,12 @@ object Lists extends App {
       case Cons(_, t) => length(t) + 1
       case _ => 0
     }
+
+    def contains[A](l:List[A], elem:A): Boolean = l match {
+      case Cons(h, t) if elem == h => true || contains(t, elem)
+      case Cons(_, t) => false || contains(t, elem)
+      case _ => false
+    }
   }
 
   // Note "List." qualification

@@ -19,7 +19,6 @@ object University {
 
   trait Course {
     def name: String
-
     def teacher: String
   }
 
@@ -28,14 +27,11 @@ object University {
 
     private case class StudentImpl(override val name: String, override val year: Int) extends Student {
       private var coursesSet: List[Course] = List.nil
-
       override def enrolling(courses: Course*): Unit = for (course <- courses) {
         coursesSet = Cons(course, coursesSet)
       }
-
       override def courses: List[String] = List.map(coursesSet)(_.name)
-
-      override def hasTeacher(teacher: String): Boolean = length(List.filter(coursesSet)(_.teacher == teacher)) >= 1
+      override def hasTeacher(teacher: String): Boolean = List.contains(List.map(coursesSet)(_.teacher), teacher)
     }
 
   }
@@ -79,16 +75,17 @@ object Try extends App {
   s3.enrolling(cSDR)
   println(s1.courses, s2.courses, s3.courses) // (Cons(PCD,Cons(PPS,Nil())),Cons(PPS,Nil()),Cons(SDR,Cons(PCD,Cons(PPS,Nil()))))
   println(s1.hasTeacher("Ricci")) // true
+  println(s1.hasTeacher("Ghini")) // false
 
   val cOOP = Course("PCD","Viroli")
   val courses = List(cPPS, cOOP)
-  printSameTeacher(courses)
+  printSameTeacher(courses) // Cons(CourseImpl(PPS,Viroli),Cons(CourseImpl(PCD,Viroli),Nil())) have same teacher Viroli
 
   val coursesEmpty = List(cPPS)
-  printSameTeacher(coursesEmpty)
+  printSameTeacher(coursesEmpty) // Cons(CourseImpl(PPS,Viroli),Nil()) have same teacher Viroli
 
   val coursesDifferent = List(cPPS, cSDR)
-  printSameTeacher(coursesDifferent)
+  printSameTeacher(coursesDifferent) //Cons(CourseImpl(PPS,Viroli),Cons(CourseImpl(SDR,D'Angelo),Nil())) have different teachers
 }
 
 /** Hints:
