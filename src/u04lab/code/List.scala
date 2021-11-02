@@ -97,7 +97,7 @@ object Lists extends App {
     }
 
     def contains[A](l:List[A], elem:A): Boolean = l match {
-      case Cons(`elem`, t) => true || contains(t, elem)
+      case Cons(`elem`, t) => true
       case Cons(_, t) => false || contains(t, elem)
       case _ => false
     }
