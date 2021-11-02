@@ -46,10 +46,10 @@ object University {
 
   object sameTeacher {
     def unapply(courses: List[Course]): Option[String] = {
-      val firstTeacher: String = courses match {
+      val teacher: String = courses match {
         case Cons(h, _) => h.teacher
       }
-      Option.when(List.foldLeft(courses)(true)((b, c) => b && c.teacher == firstTeacher))(firstTeacher)
+      Option.when(List.foldLeft(courses)(true)((b, c) => b && c.teacher == teacher))(teacher)
     }
   }
 
